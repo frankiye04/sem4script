@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>College Details</title>
+ <style>
+ body { font-family: Arial, sans-serif; margin: 20px; }
+ input, button { margin: 10px 0; padding: 10px; font-size: 16px; }
+ .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+ </style>
+</head>
+<body>
+ <h1>Find College Details</h1>
+ <label for="college_code">Enter College Code:</label>
+ <input type="text" id="college_code" placeholder="e.g., C101">
+ <button onclick="getCollegeDetails()">Get Details</button>
+ <div class="result" id="result"></div>
+ <script>
+ function getCollegeDetails() {
+ const collegeCode = document.getElementById('college_code').value;
+ const resultDiv = document.getElementById('result');
+ if (!collegeCode) {
+ resultDiv.innerHTML = "<p>Please enter a college code.</p>";
+ return;
+ }
+ fetch(`get_college_details.php?college_code=${collegeCode}`)
+ .then(response => response.json())
+ .then(data => {
+ if (data.error) {
+ resultDiv.innerHTML = `<p>${data.error}</p>`;
+ } else {
+ resultDiv.innerHTML = `
+ <h3>${data.college_name}</h3>
+ <p><strong>Code:</strong> ${data.college_code}</p>
+ <p><strong>Courses Offered:</strong> ${data.courses_offered}</p>
+ <p><strong>Address:</strong> ${data.address}</p>
+ <p><strong>Hostel Facility:</strong> ${data.hostel_facility}</p>
+ `;
+ }
+ })
+ .catch(error => {
+ resultDiv.innerHTML = `<p>Error fetching details: ${error.message}</p>`;
+ });
+ }
+ </script>
+</body>
+</html>
